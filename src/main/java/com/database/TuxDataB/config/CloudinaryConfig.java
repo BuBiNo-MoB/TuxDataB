@@ -1,4 +1,4 @@
-package com.database.TuxDataB.cloudinary;
+package com.database.TuxDataB.config;
 
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Value;

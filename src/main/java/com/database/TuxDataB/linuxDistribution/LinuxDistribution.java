@@ -1,9 +1,9 @@
 package com.database.TuxDataB.linuxDistribution;
 
+import com.database.TuxDataB.comment.Comment;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.xml.stream.events.Comment;
 import java.util.Date;
 import java.util.List;
 
