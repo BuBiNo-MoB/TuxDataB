@@ -204,5 +204,9 @@ public class UserService {
         return size;
     }
 
+    public Optional<User> findOneByUsername(String username) {
+        return usersRepository.findOneByUsername(username);
+    }
+
 
 }
