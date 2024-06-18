@@ -22,8 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.Properties;
 
 @Configuration
-//QUESTA ANNOTAZIONE SERVE A COMUNICARE A SPRING CHE QUESTA  CLASSE Ã¨ UTILIZZATA PER CONFIGURARE LA SECURITY
-@EnableWebSecurity()
+@EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig {
 
@@ -56,21 +55,20 @@ public class ApplicationSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // Utilizza la configurazione CORS
-                .authorizeHttpRequests(authorize ->
-                                authorize //CONFIGURAZIONE DELLA PROTEZIONE DEI VARI ENDPOINT
-                                        .requestMatchers("/users/login").permitAll()
-                                        .requestMatchers("/users/registerAdmin").permitAll() // DA CANCELLARE DOPO AVER CREATO L'ADMIN
-                                        .requestMatchers(HttpMethod.POST, "/users", "/comments").permitAll() //ENDPOINT DI REGISTRAZIONE APERTO A TUTTI
-                                        .requestMatchers(HttpMethod.GET, "/**").authenticated() //TUTTE GLI ENDPOINTS DI TIPO GET SONO RICHIAMABILI SOLO SE L'UTENTE E AUTENTICATO
-                                        .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN") //TUTTE LE POST POSSONO ESSERE FATTE SOLO DALL'ADMIN
-                                        .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated() //SOLO UN UTENTE AUTENTICATO PUO MODIFICARE I SUOI DATI
-                                        .requestMatchers(HttpMethod.PUT, "/**").hasAuthority("ADMIN") //TUTTE LE PUT POSSONO ESSERE FATTE SOLO DALL'ADMIN
-                                        .requestMatchers(HttpMethod.DELETE, "/**").hasAuthority("ADMIN") //TUTTE LE DELETE POSSONO ESSERE FATTE SOLO DALL'ADMIN
-                        //.requestMatchers("/**").authenticated() //TUTTO CIO CHE PUO ESSERE SFUGGITO RICHIEDE L'AUTENTICAZIONE (SERVE A GESTIRE EVENTUALI DIMENTICANZE)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/users/login").permitAll()
+                        .requestMatchers("/users/registerAdmin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/comments").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasAuthority("ADMIN")
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //COMUNICA ALLA FILTERCHAIN QUALE FILTRO UTILIZZARE, SENZA QUESTA RIGA DI CODICE IL FILTRO NON VIENE RICHIAMATO
                 .addFilterBefore(authenticationJwtToken(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -105,4 +103,3 @@ public class ApplicationSecurityConfig {
     }
 
 }
-

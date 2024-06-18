@@ -32,7 +32,7 @@ import java.util.Optional;
 public class UserService {
 
     private final PasswordEncoder encoder;
-    private final UserRespository usersRepository;
+    private final UserRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final AuthenticationManager auth;
     private final JwtUtils jwt;

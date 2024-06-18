@@ -21,7 +21,7 @@ public class UserController {
     private UserService user;
 
     @Autowired
-    private UserRespository usersRepository;
+    private UserRepository usersRepository;
 
     @Autowired
     private Cloudinary cloudinary;

@@ -1,6 +1,5 @@
 package com.database.TuxDataB.linuxDistribution;
 
-import com.database.TuxDataB.comment.Comment;
 import com.database.TuxDataB.comment.CommentDTO;
 import com.database.TuxDataB.comment.CommentService;
 import com.database.TuxDataB.user.User;
@@ -61,12 +60,7 @@ public class DistributionController {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         User user = userService.findOneByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Comment comment = new Comment();
-        comment.setDistribution(distribution);
-        comment.setUser(user);
-        comment.setText(commentDTO.getText());
-
-        CommentDTO createdCommentDTO = modelMapper.map(commentService.create(modelMapper.map(comment, CommentDTO.class)), CommentDTO.class);
+        CommentDTO createdCommentDTO = commentService.create(commentDTO);
         return new ResponseEntity<>(createdCommentDTO, HttpStatus.CREATED);
     }
 
