@@ -132,6 +132,25 @@ public class UserService {
 
     }
 
+    public User updateUser(Long id, User updatedUser) {
+        User user = usersRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setUsername(updatedUser.getUsername());
+        user.setEmail(updatedUser.getEmail());
+
+        // Aggiorna i ruoli
+        user.getRoles().clear();
+        for (Roles role : updatedUser.getRoles()) {
+            Roles existingRole = rolesRepository.findById(role.getRoleType())
+                    .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+            user.getRoles().add(existingRole);
+        }
+
+        return usersRepository.save(user);
+    }
 
 
     @Transactional

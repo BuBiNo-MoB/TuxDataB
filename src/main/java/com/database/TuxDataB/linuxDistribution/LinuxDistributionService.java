@@ -1,5 +1,6 @@
 package com.database.TuxDataB.linuxDistribution;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class LinuxDistributionService {
         LinuxDistribution distribution = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Distribution not found"));
         modelMapper.map(distributionDTO, distribution);
+        distribution.setId(id);
+
         return modelMapper.map(repository.save(distribution), LinuxDistributionDTO.class);
     }
 
@@ -34,6 +37,13 @@ public class LinuxDistributionService {
 
     public List<LinuxDistributionDTO> findAll() {
         return repository.findAll().stream()
+                .map(distribution -> modelMapper.map(distribution, LinuxDistributionDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<LinuxDistributionDTO> searchByName(String keyword) {
+        return repository.searchByNameContaining(keyword).stream()
                 .map(distribution -> modelMapper.map(distribution, LinuxDistributionDTO.class))
                 .collect(Collectors.toList());
     }

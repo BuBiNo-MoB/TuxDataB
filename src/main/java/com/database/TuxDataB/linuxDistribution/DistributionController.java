@@ -1,5 +1,6 @@
 package com.database.TuxDataB.linuxDistribution;
 
+import com.database.TuxDataB.comment.Comment;
 import com.database.TuxDataB.comment.CommentDTO;
 import com.database.TuxDataB.comment.CommentService;
 import com.database.TuxDataB.user.User;
@@ -60,7 +61,12 @@ public class DistributionController {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         User user = userService.findOneByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-        CommentDTO createdCommentDTO = commentService.create(commentDTO);
+        Comment comment = new Comment();
+        comment.setDistribution(distribution);
+        comment.setUser(user);
+        comment.setText(commentDTO.getText());
+
+        CommentDTO createdCommentDTO = modelMapper.map(commentService.create(modelMapper.map(comment, CommentDTO.class)), CommentDTO.class);
         return new ResponseEntity<>(createdCommentDTO, HttpStatus.CREATED);
     }
 
@@ -68,5 +74,11 @@ public class DistributionController {
     public ResponseEntity<List<CommentDTO>> getCommentsByDistributionId(@PathVariable Long id) {
         List<CommentDTO> comments = commentService.findByDistributionId(id);
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<LinuxDistributionDTO>> searchByName(@RequestParam String keyword) {
+        List<LinuxDistributionDTO> distributions = distributionService.searchByName(keyword);
+        return new ResponseEntity<>(distributions, HttpStatus.OK);
     }
 }

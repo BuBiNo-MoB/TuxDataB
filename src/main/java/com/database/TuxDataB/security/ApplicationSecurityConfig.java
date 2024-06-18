@@ -56,10 +56,15 @@ public class ApplicationSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // Utilizza la configurazione CORS
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/distributions/search").permitAll()
                         .requestMatchers("/users/login").permitAll()
                         .requestMatchers("/users/registerAdmin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/distributions").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/distributions/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/distributions/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/distributions/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN")

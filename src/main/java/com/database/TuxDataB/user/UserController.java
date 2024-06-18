@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserService user;
+    private UserService userService;
 
     @Autowired
     private UserRepository usersRepository;
@@ -31,7 +31,7 @@ public class UserController {
         if (validator.hasErrors()) {
             throw new ApiValidationException(validator.getAllErrors());
         }
-        var registeredUser = user.register(
+        var registeredUser = userService.register(
                 RegisterUserDTO.builder()
                         .withFirstName(model.firstName())
                         .withLastName(model.lastName())
@@ -48,14 +48,19 @@ public class UserController {
         if (validator.hasErrors()) {
             throw  new ApiValidationException(validator.getAllErrors());
         }
-        return new ResponseEntity<>(user.login(model.username(), model.password()).orElseThrow(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.login(model.username(), model.password()).orElseThrow(), HttpStatus.OK);
     }
 
     @PostMapping("/registerAdmin")
     public ResponseEntity<RegisteredUserDTO> registerAdmin(@RequestBody RegisterUserDTO registerUser){
-        return ResponseEntity.ok(user.registerAdmin(registerUser));
+        return ResponseEntity.ok(userService.registerAdmin(registerUser));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User user = userService.updateUser(id, updatedUser);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
         @PostMapping("/{username}/avatar")
         public ResponseEntity<String> uploadAvatar(@PathVariable String username, @RequestParam("file") MultipartFile file) {
