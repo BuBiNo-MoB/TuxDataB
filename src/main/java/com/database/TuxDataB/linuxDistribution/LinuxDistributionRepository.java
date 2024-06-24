@@ -11,4 +11,6 @@ public interface LinuxDistributionRepository extends JpaRepository<LinuxDistribu
 
     @Query("SELECT d FROM LinuxDistribution d WHERE LOWER(d.name) LIKE LOWER(concat('%', :keyword,'%'))")
     List<LinuxDistribution> searchByNameContaining(@Param("keyword") String keyword);
+
+    List<LinuxDistribution> findByDesktopEnvironment(String desktopEnvironment);
 }

@@ -26,6 +26,12 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/distribution/{distributionId}")
     public ResponseEntity<List<CommentDTO>> findByDistributionId(@PathVariable Long distributionId) {
         List<CommentDTO> comments = commentService.findByDistributionId(distributionId);

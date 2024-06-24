@@ -15,4 +15,5 @@ public class LinuxDistributionDTO {
     private String baseDistro;
     private String supportedArchitecture;
     private String packageType;
+    private String desktopEnvironment;
 }

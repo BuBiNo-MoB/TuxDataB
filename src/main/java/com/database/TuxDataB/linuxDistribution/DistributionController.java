@@ -81,4 +81,10 @@ public class DistributionController {
         List<LinuxDistributionDTO> distributions = distributionService.searchByName(keyword);
         return new ResponseEntity<>(distributions, HttpStatus.OK);
     }
+
+    @GetMapping("/searchByDesktopEnvironment")
+    public ResponseEntity<List<LinuxDistributionDTO>> searchByDesktopEnvironment(@RequestParam String desktopEnvironment) {
+        List<LinuxDistributionDTO> distributions = distributionService.findByDesktopEnvironment(desktopEnvironment);
+        return new ResponseEntity<>(distributions, HttpStatus.OK);
+    }
 }

@@ -26,6 +26,7 @@ public class LinuxDistribution {
     private String baseDistro;
     private String supportedArchitecture;
     private String packageType;
+    private String desktopEnvironment;
 
     @OneToMany(mappedBy = "distribution", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

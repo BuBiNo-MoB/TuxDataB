@@ -227,5 +227,14 @@ public class UserService {
         return usersRepository.findOneByUsername(username);
     }
 
+    public List<User> findAllUsers() {
+        return usersRepository.findAll();
+    }
 
+    public void deleteUser(Long id) {
+        if (!usersRepository.existsById(id)) {
+            throw new EntityNotFoundException("User not found with id: " + id);
+        }
+        usersRepository.deleteById(id);
+    }
 }

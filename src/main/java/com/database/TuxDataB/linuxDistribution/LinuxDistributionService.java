@@ -51,4 +51,10 @@ public class LinuxDistributionService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public List<LinuxDistributionDTO> findByDesktopEnvironment(String desktopEnvironment) {
+        return repository.findByDesktopEnvironment(desktopEnvironment).stream()
+                .map(distribution -> modelMapper.map(distribution, LinuxDistributionDTO.class))
+                .collect(Collectors.toList());
+    }
 }
