@@ -16,4 +16,6 @@ public class LinuxDistributionDTO {
     private String supportedArchitecture;
     private String packageType;
     private String desktopEnvironment;
+    private String logoUrl;
+    private String desktopImageUrl;
 }

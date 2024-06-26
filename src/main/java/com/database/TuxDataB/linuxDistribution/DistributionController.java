@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -86,5 +88,41 @@ public class DistributionController {
     public ResponseEntity<List<LinuxDistributionDTO>> searchByDesktopEnvironment(@RequestParam String desktopEnvironment) {
         List<LinuxDistributionDTO> distributions = distributionService.findByDesktopEnvironment(desktopEnvironment);
         return new ResponseEntity<>(distributions, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/logo")
+    public ResponseEntity<String> uploadLogo(@PathVariable Long id, @RequestParam("logo") MultipartFile logo) throws IOException {
+        String logoUrl = distributionService.uploadLogo(id, logo);
+        return new ResponseEntity<>(logoUrl, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/desktopImage")
+    public ResponseEntity<String> uploadDesktopImage(@PathVariable Long id, @RequestParam("desktopImage") MultipartFile desktopImage) throws IOException {
+        String desktopImageUrl = distributionService.uploadDesktopImage(id, desktopImage);
+        return new ResponseEntity<>(desktopImageUrl, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/logo")
+    public ResponseEntity<String> updateLogo(@PathVariable Long id, @RequestParam("logo") MultipartFile logo) throws IOException {
+        String logoUrl = distributionService.updateLogo(id, logo);
+        return new ResponseEntity<>(logoUrl, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/desktopImage")
+    public ResponseEntity<String> updateDesktopImage(@PathVariable Long id, @RequestParam("desktopImage") MultipartFile desktopImage) throws IOException {
+        String desktopImageUrl = distributionService.updateDesktopImage(id, desktopImage);
+        return new ResponseEntity<>(desktopImageUrl, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/logo")
+    public ResponseEntity<Void> deleteLogo(@PathVariable Long id) throws IOException {
+        distributionService.deleteLogo(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{id}/desktopImage")
+    public ResponseEntity<Void> deleteDesktopImage(@PathVariable Long id) throws IOException {
+        distributionService.deleteDesktopImage(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

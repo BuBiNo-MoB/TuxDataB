@@ -54,7 +54,7 @@ public class ApplicationSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults()) // Utilizza la configurazione CORS
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/distributions/search").permitAll()
                         .requestMatchers("/users/login").permitAll()
@@ -64,9 +64,16 @@ public class ApplicationSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/comments/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/comments/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/distributions").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/distributions/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/distributions/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/distributions/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/distributions/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/distributions/{id}/logo").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/distributions/{id}/logo").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/distributions/{id}/logo").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/distributions/{id}/desktopImage").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/distributions/{id}/desktopImage").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/distributions/{id}/desktopImage").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/distributions/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN")
