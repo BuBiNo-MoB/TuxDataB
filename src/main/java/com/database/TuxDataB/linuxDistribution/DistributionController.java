@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,15 +28,24 @@ public class DistributionController {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
-    @PostMapping
-    public ResponseEntity<LinuxDistributionDTO> createDistribution(@RequestBody LinuxDistributionDTO distributionDTO) {
-        LinuxDistributionDTO createdDistribution = distributionService.create(distributionDTO);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<LinuxDistributionDTO> createDistribution(
+            @RequestPart("distribution") LinuxDistributionDTO distributionDTO,
+            @RequestPart(value = "logo", required = false) MultipartFile logo,
+            @RequestPart(value = "desktopImage", required = false) MultipartFile desktopImage) throws IOException {
+
+        LinuxDistributionDTO createdDistribution = distributionService.create(distributionDTO, logo, desktopImage);
         return new ResponseEntity<>(createdDistribution, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LinuxDistributionDTO> updateDistribution(@PathVariable Long id, @RequestBody LinuxDistributionDTO distributionDTO) {
-        LinuxDistributionDTO updatedDistribution = distributionService.update(id, distributionDTO);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<LinuxDistributionDTO> updateDistribution(
+            @PathVariable Long id,
+            @RequestPart("distribution") LinuxDistributionDTO distributionDTO,
+            @RequestPart(value = "logo", required = false) MultipartFile logo,
+            @RequestPart(value = "desktopImage", required = false) MultipartFile desktopImage) throws IOException {
+
+        LinuxDistributionDTO updatedDistribution = distributionService.update(id, distributionDTO, logo, desktopImage);
         return new ResponseEntity<>(updatedDistribution, HttpStatus.OK);
     }
 

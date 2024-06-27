@@ -21,16 +21,48 @@ public class LinuxDistributionService {
     private final ModelMapper modelMapper;
     private final Cloudinary cloudinary;
 
-    public LinuxDistributionDTO create(LinuxDistributionDTO distributionDTO) {
+    public LinuxDistributionDTO create(LinuxDistributionDTO distributionDTO, MultipartFile logo, MultipartFile desktopImage) throws IOException {
         LinuxDistribution distribution = modelMapper.map(distributionDTO, LinuxDistribution.class);
+
+        if (logo != null && !logo.isEmpty()) {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(logo.getBytes(), ObjectUtils.emptyMap());
+            String logoUrl = (String) uploadResult.get("url");
+            distribution.setLogoUrl(logoUrl);
+        }
+
+        if (desktopImage != null && !desktopImage.isEmpty()) {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(desktopImage.getBytes(), ObjectUtils.emptyMap());
+            String desktopImageUrl = (String) uploadResult.get("url");
+            distribution.setDesktopImageUrl(desktopImageUrl);
+        }
+
         return modelMapper.map(repository.save(distribution), LinuxDistributionDTO.class);
     }
 
-    public LinuxDistributionDTO update(Long id, LinuxDistributionDTO distributionDTO) {
+    public LinuxDistributionDTO update(Long id, LinuxDistributionDTO distributionDTO, MultipartFile logo, MultipartFile desktopImage) throws IOException {
         LinuxDistribution distribution = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Distribution not found"));
+
         modelMapper.map(distributionDTO, distribution);
         distribution.setId(id);
+
+        if (logo != null && !logo.isEmpty()) {
+            if (distribution.getLogoUrl() != null) {
+                cloudinary.uploader().destroy(distribution.getLogoUrl(), ObjectUtils.emptyMap());
+            }
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(logo.getBytes(), ObjectUtils.emptyMap());
+            String logoUrl = (String) uploadResult.get("url");
+            distribution.setLogoUrl(logoUrl);
+        }
+
+        if (desktopImage != null && !desktopImage.isEmpty()) {
+            if (distribution.getDesktopImageUrl() != null) {
+                cloudinary.uploader().destroy(distribution.getDesktopImageUrl(), ObjectUtils.emptyMap());
+            }
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(desktopImage.getBytes(), ObjectUtils.emptyMap());
+            String desktopImageUrl = (String) uploadResult.get("url");
+            distribution.setDesktopImageUrl(desktopImageUrl);
+        }
 
         return modelMapper.map(repository.save(distribution), LinuxDistributionDTO.class);
     }

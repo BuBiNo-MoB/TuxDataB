@@ -1,6 +1,5 @@
 package com.database.TuxDataB.user;
 
-
 import com.database.TuxDataB.security.RegisterUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -39,8 +38,6 @@ public class UserRunner implements ApplicationRunner {
                             .withEmail("lverdi@example.com")
                             .withPassword("password456")
                             .build(),
-                    // Aggiungi altri utenti come necessario
-                    // Esempio:
                     RegisterUserDTO.builder()
                             .withFirstName("Giovanna")
                             .withLastName("Bianchi")
@@ -50,7 +47,7 @@ public class UserRunner implements ApplicationRunner {
                             .build()
             );
 
-            users.forEach(userService::register);
+            users.forEach(user -> userService.register(user));
             System.out.println("--- Utenti registrati ---");
         }
     }

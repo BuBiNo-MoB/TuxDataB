@@ -1,6 +1,5 @@
 package com.database.TuxDataB.user;
 
-
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.database.TuxDataB.email.EmailService;
@@ -36,22 +35,16 @@ public class UserService {
     private final RolesRepository rolesRepository;
     private final AuthenticationManager auth;
     private final JwtUtils jwt;
-    private final EmailService emailService; // per gestire invio email di benvenuto
-    private final Cloudinary cloudinary; // gestisce cloudinary
+    private final EmailService emailService;
+    private final Cloudinary cloudinary;
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSize;
 
-
     public Optional<LoginResponseDTO> login(String username, String password) {
         try {
-            //SI EFFETTUA IL LOGIN
-            //SI CREA UNA AUTENTICAZIONE OVVERO L'OGGETTO DI TIPO AUTHENTICATION
             var a = auth.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
-            a.getAuthorities(); //SERVE A RECUPERARE I RUOLI/IL RUOLO
-
-            //SI CREA UN CONTESTO DI SICUREZZA CHE SARA UTILIZZATO IN PIU OCCASIONI
+            a.getAuthorities();
             SecurityContextHolder.getContext().setAuthentication(a);
 
             var user = usersRepository.findOneByUsername(username).orElseThrow();
@@ -65,23 +58,22 @@ public class UserService {
                             .withUsername(user.getUsername())
                             .build())
                     .build();
-
-            //UTILIZZO DI JWTUTILS PER GENERARE IL TOKEN UTILIZZANDO UNA AUTHENTICATION E LO ASSEGNA ALLA LOGINRESPONSEDTO
             dto.setToken(jwt.generateToken(a));
-
             return Optional.of(dto);
         } catch (NoSuchElementException e) {
-            //ECCEZIONE LANCIATA SE LO USERNAME E SBAGLIATO E QUINDI L'UTENTE NON VIENE TROVATO
             log.error("User not found", e);
             throw new InvalidLoginException(username, password);
         } catch (AuthenticationException e) {
-            //ECCEZIONE LANCIATA SE LA PASSWORD E SBAGLIATA
             log.error("Authentication failed", e);
             throw new InvalidLoginException(username, password);
         }
     }
 
-    public RegisteredUserDTO register(RegisterUserDTO register){
+    public RegisteredUserDTO register(RegisterUserDTO register) {
+        return register(register, null);
+    }
+
+    public RegisteredUserDTO register(RegisterUserDTO register, MultipartFile avatar) {
         if(usersRepository.existsByUsername(register.getUsername())){
             throw new EntityExistsException("Utente gia' esistente");
         }
@@ -89,19 +81,22 @@ public class UserService {
             throw new EntityExistsException("Email gia' registrata");
         }
         Roles roles = rolesRepository.findById(Roles.ROLES_USER).get();
-        /*
-        if(!rolesRepository.existsById(Roles.ROLES_USER)){
-            roles = new Roles();
-            roles.setRoleType(Roles.ROLES_USER);
-        } else {
-            roles = rolesRepository.findById(Roles.ROLES_USER).get();
-        }
 
-         */
         User u = new User();
         BeanUtils.copyProperties(register, u);
         u.setPassword(encoder.encode(register.getPassword()));
         u.getRoles().add(roles);
+
+        if (avatar != null && !avatar.isEmpty()) {
+            try {
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
+                String avatarUrl = (String) uploadResult.get("url");
+                u.setAvatar(avatarUrl);
+            } catch (IOException e) {
+                log.error("Failed to upload avatar", e);
+            }
+        }
+
         usersRepository.save(u);
         RegisteredUserDTO response = new RegisteredUserDTO();
         BeanUtils.copyProperties(u, response);
@@ -109,10 +104,9 @@ public class UserService {
         emailService.sendWelcomeEmail(u.getEmail());
 
         return response;
-
     }
 
-    public RegisteredUserDTO registerAdmin(RegisterUserDTO register){
+    public RegisteredUserDTO registerAdmin(RegisterUserDTO register) {
         if(usersRepository.existsByUsername(register.getUsername())){
             throw new EntityExistsException("Utente gia' esistente");
         }
@@ -129,10 +123,9 @@ public class UserService {
         BeanUtils.copyProperties(u, response);
         response.setRoles(List.of(roles));
         return response;
-
     }
 
-    public User updateUser(Long id, User updatedUser) {
+    public User updateUser(Long id, User updatedUser, MultipartFile avatar) throws IOException {
         User user = usersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -149,9 +142,17 @@ public class UserService {
             user.getRoles().add(existingRole);
         }
 
+        if (avatar != null && !avatar.isEmpty()) {
+            if (user.getAvatar() != null) {
+                cloudinary.uploader().destroy(user.getAvatar(), ObjectUtils.emptyMap());
+            }
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
+            String avatarUrl = (String) uploadResult.get("url");
+            user.setAvatar(avatarUrl);
+        }
+
         return usersRepository.save(user);
     }
-
 
     @Transactional
     public String uploadAvatar(Long id, MultipartFile image) throws IOException {
@@ -178,9 +179,6 @@ public class UserService {
         return url;
     }
 
-
-// DELETE delete cloudinary file
-
     @Transactional
     public String deleteAvatar(Long id) throws IOException {
         Optional<User> optionalUser = usersRepository.findById(id);
@@ -197,8 +195,6 @@ public class UserService {
         }
     }
 
-
-    // PUT update cloudinary file
     @Transactional
     public String updateAvatar(Long id, MultipartFile updatedImage) throws IOException {
         deleteAvatar(id);
