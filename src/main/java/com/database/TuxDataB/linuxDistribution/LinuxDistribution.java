@@ -1,26 +1,24 @@
 package com.database.TuxDataB.linuxDistribution;
 
-import com.database.TuxDataB.comment.Comment;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name = "linux_distributions")
+@NoArgsConstructor
+@AllArgsConstructor
 public class LinuxDistribution {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String currentVersion;
-    private Date releaseDate;
-
-    @Lob
+    private String name; // Aggiungi questo campo
     private String description;
     private String officialWebsite;
     private String baseDistro;
@@ -30,8 +28,15 @@ public class LinuxDistribution {
     private String logoUrl;
     private String desktopImageUrl;
 
-    @OneToMany(mappedBy = "distribution", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
-
-    private boolean isAvailable = true;
+    public LinuxDistribution(String name, String description, String officialWebsite, String baseDistro, String supportedArchitecture, String packageType, String desktopEnvironment, String logoUrl, String desktopImageUrl) {
+        this.name = name;
+        this.description = description;
+        this.officialWebsite = officialWebsite;
+        this.baseDistro = baseDistro;
+        this.supportedArchitecture = supportedArchitecture;
+        this.packageType = packageType;
+        this.desktopEnvironment = desktopEnvironment;
+        this.logoUrl = logoUrl;
+        this.desktopImageUrl = desktopImageUrl;
+    }
 }
