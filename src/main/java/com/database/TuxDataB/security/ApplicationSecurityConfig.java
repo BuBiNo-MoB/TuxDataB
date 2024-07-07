@@ -81,7 +81,7 @@ public class ApplicationSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users/me").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/**").hasAuthority("ADMIN")

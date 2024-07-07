@@ -20,7 +20,7 @@ public class EmailService {
 
         try {
             helper.setTo(recipientEmail);
-            helper.setSubject("Benvenuto nella nostra applicazione!");
+            helper.setSubject("Benvenuto in TuxData!");
             helper.setText("Grazie per esserti registrato. Benvenuto!");
 
             emailSender.send(message);
