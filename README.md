@@ -22,10 +22,13 @@ git clone https://github.com/BuBiNo-MoB/TuxDataBackEnd
 ### 📄 Configure PostgreSQL
 Create a database named tuxdatabase and configure your application.properties file with your PostgreSQL credentials.
 
+```py
 spring.datasource.url=jdbc:postgresql://localhost:5432/tuxdatabase
 spring.datasource.username=your_db_username
 spring.datasource.password=your_db_password
 spring.jpa.hibernate.ddl-auto=update
+```
+
 
 Populating Initial Data
 The application comes with a runner to populate initial data for Linux distributions. You can modify the data in LinuxDistributionRunner if needed.
