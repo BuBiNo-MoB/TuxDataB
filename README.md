@@ -17,7 +17,7 @@ PostgreSQL
 
 
 Clone the Repository
-git clone https://github.com/yourusername/TuxDataB.git
+git clone https://github.com/BuBiNo-MoB/TuxDataBackEnd
 
 Configure PostgreSQL
 Create a database named tuxdatabase and configure your application.properties file with your PostgreSQL credentials.
