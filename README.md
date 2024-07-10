@@ -19,7 +19,7 @@ RESTful API endpoints
 ### 📄 Clone the Repository
 git clone https://github.com/BuBiNo-MoB/TuxDataBackEnd
 
-### 📄 Configure PostgreSQL
+## ℹ️ Configure PostgreSQL
 Create a database named tuxdatabase and configure your application.properties file with your PostgreSQL credentials.
 
 ```py
