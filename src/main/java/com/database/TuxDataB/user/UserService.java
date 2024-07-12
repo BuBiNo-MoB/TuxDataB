@@ -2,6 +2,7 @@ package com.database.TuxDataB.user;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.database.TuxDataB.comment.CommentRepository;
 import com.database.TuxDataB.email.EmailService;
 import com.database.TuxDataB.security.*;
 import jakarta.persistence.EntityExistsException;
@@ -37,6 +38,7 @@ public class UserService {
     private final JwtUtils jwt;
     private final EmailService emailService;
     private final Cloudinary cloudinary;
+    private final CommentRepository commentRepository;
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSize;
@@ -227,10 +229,12 @@ public class UserService {
         return usersRepository.findAll();
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         if (!usersRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         usersRepository.deleteById(id);
+        commentRepository.deleteByUserId(id);
     }
 }

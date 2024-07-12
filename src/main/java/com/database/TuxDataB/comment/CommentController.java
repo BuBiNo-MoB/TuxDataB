@@ -24,7 +24,7 @@ public class CommentController {
     public ResponseEntity<List<CommentDTO>> findAll() {
         List<CommentDTO> comments = commentService.findAll();
         return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
+    }                           
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
