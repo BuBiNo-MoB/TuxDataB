@@ -135,4 +135,16 @@ public class DistributionController {
         distributionService.deleteDesktopImage(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Void> addLike(@PathVariable Long id) {
+        distributionService.addLike(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/unlike")
+    public ResponseEntity<Void> removeLike(@PathVariable Long id) {
+        distributionService.removeLike(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -29,6 +29,7 @@ public class LinuxDistribution {
     private String logoUrl;
     private String desktopImageUrl;
     private String currentVersion;
+    private int likes = 0; // Nuovo campo per i likes
 
     public LinuxDistribution(String name, String description, Date releaseDate, String officialWebsite, String baseDistro, String supportedArchitecture, String packageType, String desktopEnvironment, String logoUrl, String desktopImageUrl, String currentVersion) {
         this.name = name;
@@ -42,5 +43,6 @@ public class LinuxDistribution {
         this.logoUrl = logoUrl;
         this.desktopImageUrl = desktopImageUrl;
         this.currentVersion = currentVersion;
+        this.likes = 0;
     }
 }

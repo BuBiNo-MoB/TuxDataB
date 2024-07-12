@@ -18,4 +18,5 @@ public class LinuxDistributionDTO {
     private String desktopEnvironment;
     private String logoUrl;
     private String desktopImageUrl;
+    private int likes;
 }

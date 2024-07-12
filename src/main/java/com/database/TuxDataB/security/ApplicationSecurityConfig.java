@@ -89,6 +89,7 @@ public class ApplicationSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/users/{id}/avatar").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users/{id}/avatar").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/{id}/avatar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/distributions/{id}/like", "/distributions/{id}/unlike").permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

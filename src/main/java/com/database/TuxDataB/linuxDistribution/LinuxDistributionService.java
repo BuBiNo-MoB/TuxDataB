@@ -153,4 +153,22 @@ public class LinuxDistributionService {
             repository.save(distribution);
         }
     }
+
+    @Transactional
+    public void addLike(Long id) {
+        LinuxDistribution distribution = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Distribution not found"));
+        distribution.setLikes(distribution.getLikes() + 1);
+        repository.save(distribution);
+    }
+
+    @Transactional
+    public void removeLike(Long id) {
+        LinuxDistribution distribution = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Distribution not found"));
+        if (distribution.getLikes() > 0) {
+            distribution.setLikes(distribution.getLikes() - 1);
+            repository.save(distribution);
+        }
+    }
 }
